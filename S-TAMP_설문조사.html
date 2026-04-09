@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S-TAMP 전자서명 시스템 사용자 만족도 설문조사</title>
+<style>
+  :root {
+    --blue-dark: #00418A;
+    --blue-mid:  #1A73E8;
+    --blue-light:#E8F0FE;
+    --gray-bg:   #F5F7FA;
+    --gray-line: #DDE3EE;
+    --text-main: #1A1A2E;
+    --text-sub:  #555;
+    --white:     #fff;
+    --green:     #1E8449;
+    --red:       #C0392B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    background: var(--gray-bg);
+    color: var(--text-main);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── 헤더 ── */
+  header {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+    color: #fff;
+    padding: 48px 24px 36px;
+    text-align: center;
+  }
+  header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 12px;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  header p  { font-size: 13px; opacity: .85; }
+
+  /* ── 안내 박스 ── */
+  .notice {
+    max-width: 780px;
+    margin: 28px auto 0;
+    background: var(--blue-light);
+    border-left: 4px solid var(--blue-mid);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 13.5px;
+    color: var(--text-main);
+  }
+  .notice strong { color: var(--blue-dark); }
+
+  /* ── 진행 바 ── */
+  .progress-wrap {
+    max-width: 780px;
+    margin: 20px auto 0;
+    padding: 0 4px;
+  }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-bottom: 6px; }
+  .progress-bar  { height: 6px; background: var(--gray-line); border-radius: 3px; }
+  .progress-fill { height: 100%; width: 0%; background: var(--blue-mid); border-radius: 3px; transition: width .4s; }
+
+  /* ── 폼 래퍼 ── */
+  .form-wrap {
+    max-width: 780px;
+    margin: 24px auto 60px;
+    padding: 0 16px;
+  }
+
+  /* ── 섹션 헤더 ── */
+  .section-header {
+    background: var(--blue-dark);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px 8px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 32px;
+  }
+  .section-body {
+    background: var(--white);
+    border: 1px solid var(--gray-line);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 24px 24px 12px;
+  }
+
+  /* ── 질문 블록 ── */
+  .q-block {
+    margin-bottom: 28px;
+  }
+  .q-label {
+    font-weight: 600;
+    font-size: 14.5px;
+    margin-bottom: 12px;
+    color: var(--text-main);
+  }
+  .q-label .q-num {
+    color: var(--blue-dark);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .required { color: var(--red); margin-left: 2px; }
+  .q-note { font-size: 12px; color: var(--text-sub); margin-left: 6px; font-weight: 400; }
+
+  /* 척도형 */
+  .scale-wrap {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr) auto;
+    gap: 6px;
+    align-items: center;
+    background: var(--gray-bg);
+    border-radius: 8px;
+    padding: 14px 12px;
+  }
+  .scale-edge {
+    font-size: 12px;
+    color: var(--blue-dark);
+    font-weight: 600;
+    text-align: center;
+    max-width: 80px;
+  }
+  .scale-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .scale-col span { font-size: 13px; font-weight: 700; color: var(--blue-mid); }
+  .scale-col input[type="radio"] {
+    width: 22px; height: 22px;
+    accent-color: var(--blue-mid);
+    cursor: pointer;
+  }
+
+  /* 선택형 */
+  .choice-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .choice-list li label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gray-line);
+    border-radius: 8px;
+    transition: border-color .2s, background .2s;
+  }
+  .choice-list li label:hover { border-color: var(--blue-mid); background: var(--blue-light); }
+  .choice-list li input[type="radio"],
+  .choice-list li input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--blue-mid);
+    flex-shrink: 0;
+  }
+  .choice-list li input:checked + span { color: var(--blue-dark); font-weight: 600; }
+
+  /* 주관식 */
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--gray-line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 110px;
+    color: var(--text-main);
+    background: var(--gray-bg);
+    transition: border-color .2s;
+  }
+  textarea:focus { outline: none; border-color: var(--blue-mid); background: #fff; }
+
+  /* 조건부 질문 */
+  .conditional { display: none; }
+
+  /* ── 제출 버튼 ── */
+  .submit-wrap { text-align: center; margin-top: 36px; }
+  .btn-submit {
+    background: var(--blue-dark);
+    color: #fff;
+    border: none;
+    padding: 16px 60px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    letter-spacing: .5px;
+    transition: background .2s, transform .1s;
+  }
+  .btn-submit:hover  { background: var(--blue-mid); }
+  .btn-submit:active { transform: scale(.97); }
+
+  /* ── 감사 화면 ── */
+  #thank-you {
+    display: none;
+    max-width: 780px;
+    margin: 60px auto;
+    text-align: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 60px 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+  }
+  #thank-you .check { font-size: 64px; color: var(--green); }
+  #thank-you h2 { font-size: 22px; margin: 16px 0 8px; color: var(--blue-dark); }
+  #thank-you p  { color: var(--text-sub); font-size: 14px; }
+
+  /* ── 에러 ── */
+  .err-msg { display: none; font-size: 12px; color: var(--red); margin-top: 6px; }
+
+  /* ── 반응형 ── */
+  @media (max-width: 600px) {
+    .scale-wrap { grid-template-columns: repeat(5, 1fr); padding: 10px 6px; }
+    .scale-edge { display: none; }
+    header h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">삼성자산운용 | 시스템 통합 테스트(SI Test)</div>
+  <h1>S-TAMP 전자서명 시스템<br>사용자 만족도 설문조사</h1>
+  <p>디지털혁신팀 | 2026년 4월</p>
+</header>
+
+<div class="notice" style="max-width:780px;margin:28px auto 0;padding:0 16px;">
+  <div style="background:var(--blue-light);border-left:4px solid var(--blue-mid);border-radius:8px;padding:16px 20px;">
+    안녕하세요. <strong>삼성자산운용 S-TAMP 전자서명 시스템</strong> 통합 테스트에 참여해 주셔서 감사합니다.<br>
+    본 설문은 시스템 사용 경험을 수집하여 서비스 품질 개선 및 성과 평가에 활용됩니다.<br>
+    응답 내용은 통계 목적으로만 사용되며, 소요 시간은 약 <strong>5분</strong>입니다. &nbsp;
+    <span style="color:var(--red);">*</span> 표시 항목은 필수 응답입니다.
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span>진행률</span><span id="prog-pct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+</div>
+
+<!-- ════════════ 폼 ════════════ -->
+<form id="survey-form" class="form-wrap" novalidate>
+
+  <!-- ── 섹션 1 ── -->
+  <div class="section-header">섹션 1 &nbsp;|&nbsp; 응답자 기본 정보</div>
+  <div class="section-body">
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q1.</span> 소속 부서를 선택해 주세요. <span class="required">*</span></div>
+      <ul class="choice-list" id="q1">
+        <li><label><input type="radio" name="q1" value="운용본부"><span>운용본부</span></label></li>
+        <li><label><input type="radio" name="q1" value="리스크관리팀"><span>리스크관리팀</span></label></li>
+        <li><label><input type="radio" name="q1" value="컴플라이언스팀"><span>컴플라이언스팀</span></label></li>
+        <li><label><input type="radio" name="q1" value="경영지원팀"><span>경영지원팀</span></label></li>
+        <li><label><input type="radio" name="q1" value="IT/디지털혁신팀"><span>IT/디지털혁신팀</span></label></li>
+        <li><label><input type="radio" name="q1" value="영업본부"><span>영업본부</span></label></li>
+        <li><label><input type="radio" name="q1" value="기타"><span>기타</span></label></li>
+      </ul>
+      <div class="err-msg" id="err-q1">소속 부서를 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q2.</span> 직급을 선택해 주세요. <span class="required">*</span></div>
+      <ul class="choice-list" id="q2">
+        <li><label><input type="radio" name="q2" value="사원/주임"><span>사원/주임</span></label></li>
+        <li><label><input type="radio" name="q2" value="대리"><span>대리</span></label></li>
+        <li><label><input type="radio" name="q2" value="과장"><span>과장</span></label></li>
+        <li><label><input type="radio" name="q2" value="차장"><span>차장</span></label></li>
+        <li><label><input type="radio" name="q2" value="부장"><span>부장</span></label></li>
+        <li><label><input type="radio" name="q2" value="임원"><span>임원</span></label></li>
+      </ul>
+      <div class="err-msg" id="err-q2">직급을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q3.</span> S-TAMP 시스템 사용 빈도는 어느 정도입니까? <span class="required">*</span></div>
+      <ul class="choice-list" id="q3">
+        <li><label><input type="radio" name="q3" value="하루5회이상"><span>하루 5회 이상</span></label></li>
+        <li><label><input type="radio" name="q3" value="하루1~4회"><span>하루 1~4회</span></label></li>
+        <li><label><input type="radio" name="q3" value="주2~4회"><span>주 2~4회</span></label></li>
+        <li><label><input type="radio" name="q3" value="주1회이하"><span>주 1회 이하</span></label></li>
+      </ul>
+      <div class="err-msg" id="err-q3">사용 빈도를 선택해 주세요.</div>
+    </div>
+  </div>
+
+  <!-- ── 섹션 2 ── -->
+  <div class="section-header">섹션 2 &nbsp;|&nbsp; 시스템 접근성 및 사용 편의성</div>
+  <div class="section-body">
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q4.</span> 로그인 및 본인 인증 과정이 편리하였습니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>불편</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q4" value="1" required></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q4" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q4" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q4" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q4" value="5"></div>
+        <div class="scale-edge">매우<br>편리</div>
+      </div>
+      <div class="err-msg" id="err-q4">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q5.</span> S-TAMP 화면 구성(UI)이 직관적이고 이해하기 쉬웠습니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>어려움</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q5" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q5" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q5" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q5" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q5" value="5"></div>
+        <div class="scale-edge">매우<br>쉬움</div>
+      </div>
+      <div class="err-msg" id="err-q5">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q6.</span> 문서 템플릿 선택 및 내용 입력 과정이 편리하였습니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>불편</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q6" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q6" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q6" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q6" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q6" value="5"></div>
+        <div class="scale-edge">매우<br>편리</div>
+      </div>
+      <div class="err-msg" id="err-q6">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q7.</span> 기존 11단계 대비 3단계 간소화 프로세스(템플릿→서명→자동발송)가 간결하게 느껴집니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>복잡</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q7" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q7" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q7" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q7" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q7" value="5"></div>
+        <div class="scale-edge">매우<br>간결</div>
+      </div>
+      <div class="err-msg" id="err-q7">응답을 선택해 주세요.</div>
+    </div>
+  </div>
+
+  <!-- ── 섹션 3 ── -->
+  <div class="section-header">섹션 3 &nbsp;|&nbsp; Knox-ATIS 이중결재 통합 기능 평가</div>
+  <div class="section-body">
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q8.</span> Knox와 ATIS의 이중결재가 S-TAMP로 통합되어 One-Stop 처리가 가능해진 것에 만족하십니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>불만족</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q8" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q8" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q8" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q8" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q8" value="5"></div>
+        <div class="scale-edge">매우<br>만족</div>
+      </div>
+      <div class="err-msg" id="err-q8">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q9.</span> 기존 이중결재(Knox→ATIS) 대비 업무 처리 시간이 단축되었다고 느끼십니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">전혀<br>못 느낌</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q9" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q9" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q9" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q9" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q9" value="5"></div>
+        <div class="scale-edge">매우<br>크게 단축</div>
+      </div>
+      <div class="err-msg" id="err-q9">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q10.</span> 통합 후 가장 크게 개선된 점은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
+      <ul class="choice-list">
+        <li><label><input type="checkbox" name="q10" value="중복입력해소"><span>중복 입력 해소</span></label></li>
+        <li><label><input type="checkbox" name="q10" value="결재대기단축"><span>결재 대기 시간 단축</span></label></li>
+        <li><label><input type="checkbox" name="q10" value="이동불필요"><span>시스템 간 이동 불필요</span></label></li>
+        <li><label><input type="checkbox" name="q10" value="휴먼에러감소"><span>휴먼 에러 감소</span></label></li>
+        <li><label><input type="checkbox" name="q10" value="기타"><span>기타</span></label></li>
+      </ul>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q11.</span> 결재 워크플로(상신→승인→완료) 흐름이 명확하고 이해하기 쉽습니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">전혀<br>명확 안 함</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q11" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q11" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q11" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q11" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q11" value="5"></div>
+        <div class="scale-edge">매우<br>명확함</div>
+      </div>
+      <div class="err-msg" id="err-q11">응답을 선택해 주세요.</div>
+    </div>
+  </div>
+
+  <!-- ── 섹션 4 ── -->
+  <div class="section-header">섹션 4 &nbsp;|&nbsp; 시스템 성능 및 안정성</div>
+  <div class="section-body">
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q12.</span> 전자서명 처리 속도(서명 요청~완료)에 만족하십니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>불만족</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q12" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q12" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q12" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q12" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q12" value="5"></div>
+        <div class="scale-edge">매우<br>만족</div>
+      </div>
+      <div class="err-msg" id="err-q12">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q13.</span> 테스트 기간 중 시스템 오류 또는 장애를 경험하셨습니까? <span class="required">*</span></div>
+      <ul class="choice-list" id="q13">
+        <li><label><input type="radio" name="q13" value="없었다"><span>없었다</span></label></li>
+        <li><label><input type="radio" name="q13" value="1~2회"><span>1~2회 경험하였다</span></label></li>
+        <li><label><input type="radio" name="q13" value="3~5회"><span>3~5회 경험하였다</span></label></li>
+        <li><label><input type="radio" name="q13" value="5회이상"><span>5회 이상 자주 경험하였다</span></label></li>
+      </ul>
+      <div class="err-msg" id="err-q13">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block conditional" id="q14-block">
+      <div class="q-label"><span class="q-num">Q14.</span> (오류 경험 시) 오류 안내 메시지가 충분히 명확하였습니까?</div>
+      <ul class="choice-list">
+        <li><label><input type="radio" name="q14" value="전혀명확안함"><span>전혀 명확하지 않았다</span></label></li>
+        <li><label><input type="radio" name="q14" value="다소부족"><span>다소 부족하였다</span></label></li>
+        <li><label><input type="radio" name="q14" value="보통"><span>보통이었다</span></label></li>
+        <li><label><input type="radio" name="q14" value="충분"><span>충분하였다</span></label></li>
+        <li><label><input type="radio" name="q14" value="매우충분"><span>매우 충분하였다</span></label></li>
+      </ul>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q15.</span> 모바일(스마트폰/태블릿)에서 서명 승인 기능을 사용하셨습니까? <span class="required">*</span></div>
+      <ul class="choice-list" id="q15">
+        <li><label><input type="radio" name="q15" value="예"><span>예</span></label></li>
+        <li><label><input type="radio" name="q15" value="아니오"><span>아니오</span></label></li>
+      </ul>
+      <div class="err-msg" id="err-q15">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block conditional" id="q16-block">
+      <div class="q-label"><span class="q-num">Q16.</span> (모바일 사용 시) 모바일 환경에서의 사용 편의성은 어떠하였습니까?</div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>불편</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q16" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q16" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q16" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q16" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q16" value="5"></div>
+        <div class="scale-edge">매우<br>편리</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 섹션 5 ── -->
+  <div class="section-header">섹션 5 &nbsp;|&nbsp; 보안 및 컴플라이언스</div>
+  <div class="section-body">
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q17.</span> 블록체인 기반 서명 이력 관리(Audit Trail)가 인감 오남용 방지에 효과적이라고 생각하십니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">전혀<br>효과없음</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q17" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q17" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q17" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q17" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q17" value="5"></div>
+        <div class="scale-edge">매우<br>효과적</div>
+      </div>
+      <div class="err-msg" id="err-q17">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q18.</span> S-TAMP의 전자서명이 법적 효력을 갖추고 있다는 것에 신뢰가 가십니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">전혀<br>신뢰안함</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q18" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q18" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q18" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q18" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q18" value="5"></div>
+        <div class="scale-edge">매우<br>신뢰함</div>
+      </div>
+      <div class="err-msg" id="err-q18">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q19.</span> 서명 완료 문서의 보관·조회 기능(중앙 저장소)이 충분합니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>부족</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q19" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q19" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q19" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q19" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q19" value="5"></div>
+        <div class="scale-edge">매우<br>충분</div>
+      </div>
+      <div class="err-msg" id="err-q19">응답을 선택해 주세요.</div>
+    </div>
+  </div>
+
+  <!-- ── 섹션 6 ── -->
+  <div class="section-header">섹션 6 &nbsp;|&nbsp; 업무 개선 효과 평가</div>
+  <div class="section-body">
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q20.</span> 기존 종이 인감 프로세스 대비 S-TAMP 도입으로 전체 업무 효율이 향상되었다고 느끼십니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">전혀<br>향상안됨</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q20" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q20" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q20" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q20" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q20" value="5"></div>
+        <div class="scale-edge">매우<br>크게 향상</div>
+      </div>
+      <div class="err-msg" id="err-q20">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q21.</span> 출력→날인→스캔→우편 발송 단계가 사라진 것이 실무에서 체감상 도움이 됩니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">전혀<br>도움안됨</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q21" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q21" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q21" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q21" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q21" value="5"></div>
+        <div class="scale-edge">매우<br>도움됨</div>
+      </div>
+      <div class="err-msg" id="err-q21">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q22.</span> 고객 문서 처리 속도(기존 3일↑ → 당일 처리)에 만족하십니까? <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>불만족</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q22" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q22" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q22" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q22" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q22" value="5"></div>
+        <div class="scale-edge">매우<br>만족</div>
+      </div>
+      <div class="err-msg" id="err-q22">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q23.</span> 향후 모바일 생체인증(지문/안면인식) 기능 추가 시 활용 의향이 있으십니까? <span class="required">*</span></div>
+      <ul class="choice-list" id="q23">
+        <li><label><input type="radio" name="q23" value="적극활용"><span>적극 활용하겠다</span></label></li>
+        <li><label><input type="radio" name="q23" value="활용의향있음"><span>활용 의향이 있다</span></label></li>
+        <li><label><input type="radio" name="q23" value="모르겠다"><span>모르겠다</span></label></li>
+        <li><label><input type="radio" name="q23" value="없다"><span>활용 의향이 없다</span></label></li>
+      </ul>
+      <div class="err-msg" id="err-q23">응답을 선택해 주세요.</div>
+    </div>
+  </div>
+
+  <!-- ── 섹션 7 ── -->
+  <div class="section-header">섹션 7 &nbsp;|&nbsp; 종합 만족도 및 의견</div>
+  <div class="section-body">
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q24.</span> S-TAMP 전자서명 시스템에 대한 <strong>전반적인 만족도</strong>를 평가해 주십시오. <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">매우<br>불만족</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q24" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q24" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q24" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q24" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q24" value="5"></div>
+        <div class="scale-edge">매우<br>만족</div>
+      </div>
+      <div class="err-msg" id="err-q24">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q25.</span> 동료에게 S-TAMP 사용을 권장하시겠습니까? (NPS) <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-edge">절대<br>권장안함</div>
+        <div class="scale-col"><span>1</span><input type="radio" name="q25" value="1"></div>
+        <div class="scale-col"><span>2</span><input type="radio" name="q25" value="2"></div>
+        <div class="scale-col"><span>3</span><input type="radio" name="q25" value="3"></div>
+        <div class="scale-col"><span>4</span><input type="radio" name="q25" value="4"></div>
+        <div class="scale-col"><span>5</span><input type="radio" name="q25" value="5"></div>
+        <div class="scale-edge">적극<br>권장함</div>
+      </div>
+      <div class="err-msg" id="err-q25">응답을 선택해 주세요.</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q26.</span> 가장 만족스러운 기능은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
+      <ul class="choice-list">
+        <li><label><input type="checkbox" name="q26" value="이중결재통합"><span>Knox-ATIS 이중결재 통합</span></label></li>
+        <li><label><input type="checkbox" name="q26" value="3단계간소화"><span>3단계 간소화 프로세스</span></label></li>
+        <li><label><input type="checkbox" name="q26" value="블록체인감사"><span>블록체인 Audit Trail</span></label></li>
+        <li><label><input type="checkbox" name="q26" value="당일처리"><span>당일 즉시 처리</span></label></li>
+        <li><label><input type="checkbox" name="q26" value="모바일승인"><span>모바일 승인</span></label></li>
+        <li><label><input type="checkbox" name="q26" value="중앙보관조회"><span>중앙 문서 보관·조회</span></label></li>
+        <li><label><input type="checkbox" name="q26" value="기타"><span>기타</span></label></li>
+      </ul>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q27.</span> 가장 시급하게 개선이 필요한 부분은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
+      <ul class="choice-list">
+        <li><label><input type="checkbox" name="q27" value="로그인인증"><span>로그인/인증 절차</span></label></li>
+        <li><label><input type="checkbox" name="q27" value="화면UI"><span>화면 UI 구성</span></label></li>
+        <li><label><input type="checkbox" name="q27" value="처리속도"><span>처리 속도</span></label></li>
+        <li><label><input type="checkbox" name="q27" value="오류메시지"><span>오류 안내 메시지</span></label></li>
+        <li><label><input type="checkbox" name="q27" value="모바일기능"><span>모바일 기능</span></label></li>
+        <li><label><input type="checkbox" name="q27" value="문서검색"><span>문서 검색·조회</span></label></li>
+        <li><label><input type="checkbox" name="q27" value="교육도움말"><span>교육/도움말</span></label></li>
+        <li><label><input type="checkbox" name="q27" value="기타"><span>기타</span></label></li>
+      </ul>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q28.</span> S-TAMP 시스템 개선을 위한 자유로운 의견을 남겨 주세요.</div>
+      <textarea name="q28" placeholder="의견을 자유롭게 입력해 주세요..."></textarea>
+    </div>
+  </div>
+
+  <div class="submit-wrap">
+    <button type="submit" class="btn-submit">설문 제출하기</button>
+  </div>
+</form>
+
+<!-- 감사 화면 -->
+<div id="thank-you">
+  <div class="check">✅</div>
+  <h2>설문에 응해 주셔서 감사합니다!</h2>
+  <p>귀하의 소중한 의견은 S-TAMP 시스템 품질 개선 및<br>전사 확대 적용에 적극 반영하겠습니다.</p>
+  <p style="margin-top:16px;font-size:13px;color:#aaa;">삼성자산운용 디지털혁신팀</p>
+</div>
+
+<script>
+// ── 조건부 질문 표시 ──────────────────────────────────
+document.querySelectorAll('input[name="q13"]').forEach(el => {
+  el.addEventListener('change', () => {
+    const show = el.value !== '없었다';
+    document.getElementById('q14-block').style.display = show ? 'block' : 'none';
+  });
+});
+document.querySelectorAll('input[name="q15"]').forEach(el => {
+  el.addEventListener('change', () => {
+    document.getElementById('q16-block').style.display = el.value === '예' ? 'block' : 'none';
+  });
+});
+
+// ── 진행률 계산 ───────────────────────────────────────
+const REQUIRED_NAMES = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q11',
+                        'q12','q13','q15','q17','q18','q19','q20','q21','q22',
+                        'q23','q24','q25'];
+function calcProgress() {
+  let done = 0;
+  REQUIRED_NAMES.forEach(name => {
+    const inputs = document.querySelectorAll(`input[name="${name}"]`);
+    if ([...inputs].some(i => i.checked)) done++;
+  });
+  const pct = Math.round(done / REQUIRED_NAMES.length * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+document.getElementById('survey-form').addEventListener('change', calcProgress);
+
+// ── 유효성 검사 & 제출 ───────────────────────────────
+document.getElementById('survey-form').addEventListener('submit', e => {
+  e.preventDefault();
+  let valid = true;
+
+  REQUIRED_NAMES.forEach(name => {
+    const inputs = document.querySelectorAll(`input[name="${name}"]`);
+    const errEl  = document.getElementById('err-' + name);
+    const answered = [...inputs].some(i => i.checked);
+    if (errEl) errEl.style.display = answered ? 'none' : 'block';
+    if (!answered) {
+      valid = false;
+      if (errEl) errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+
+  if (!valid) return;
+
+  // ── 응답 수집 ──
+  const data = { timestamp: new Date().toISOString() };
+  document.querySelectorAll('input:checked, textarea').forEach(el => {
+    if (!el.name) return;
+    if (el.type === 'checkbox') {
+      if (!data[el.name]) data[el.name] = [];
+      data[el.name].push(el.value);
+    } else if (el.tagName === 'TEXTAREA') {
+      data[el.name] = el.value;
+    } else {
+      data[el.name] = el.value;
+    }
+  });
+
+  console.log('설문 응답 데이터:', JSON.stringify(data, null, 2));
+
+  // ── 화면 전환 ──
+  document.getElementById('survey-form').style.display = 'none';
+  document.querySelector('header').style.display = 'none';
+  document.querySelector('.notice').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'none';
+  document.getElementById('thank-you').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
