@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S-TAMP 설문 결과 분석 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --blue-dark:  #00418A;
+    --blue-mid:   #1A73E8;
+    --blue-light: #E8F0FE;
+    --gray-bg:    #F0F2F5;
+    --gray-line:  #DDE3EE;
+    --white:      #fff;
+    --text-main:  #1A1A2E;
+    --text-sub:   #666;
+    --green:      #27AE60;
+    --orange:     #E67E22;
+    --red:        #C0392B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic','맑은 고딕',sans-serif; background: var(--gray-bg); color: var(--text-main); font-size: 14px; }
+
+  /* ── 사이드바 ── */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 220px;
+    background: var(--blue-dark); color: #fff;
+    display: flex; flex-direction: column; padding: 0; z-index: 100;
+    overflow-y: auto;
+  }
+  .sidebar-logo { padding: 24px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.15); }
+  .sidebar-logo h2 { font-size: 15px; font-weight: 700; line-height: 1.4; }
+  .sidebar-logo p  { font-size: 11px; opacity: .7; margin-top: 4px; }
+  .sidebar nav { padding: 12px 0; flex: 1; }
+  .sidebar nav a {
+    display: block; padding: 10px 20px; color: rgba(255,255,255,.8);
+    text-decoration: none; font-size: 13px; border-left: 3px solid transparent;
+    transition: all .2s;
+  }
+  .sidebar nav a:hover, .sidebar nav a.active {
+    background: rgba(255,255,255,.12); color: #fff;
+    border-left-color: #fff;
+  }
+  .sidebar nav .nav-section { padding: 14px 20px 6px; font-size: 10px; opacity: .5; letter-spacing: 1px; text-transform: uppercase; }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.15); font-size: 11px; opacity: .6; }
+
+  /* ── 메인 ── */
+  .main { margin-left: 220px; min-height: 100vh; }
+
+  /* ── 상단 헤더 ── */
+  .topbar {
+    background: var(--white); border-bottom: 1px solid var(--gray-line);
+    padding: 16px 28px; display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar h1 { font-size: 18px; font-weight: 700; color: var(--blue-dark); }
+  .topbar-right { display: flex; gap: 10px; }
+  .btn { padding: 8px 18px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 600; transition: all .2s; }
+  .btn-outline { background: var(--white); border: 1.5px solid var(--blue-mid); color: var(--blue-mid); }
+  .btn-outline:hover { background: var(--blue-light); }
+  .btn-primary { background: var(--blue-dark); color: #fff; }
+  .btn-primary:hover { background: var(--blue-mid); }
+  .btn-danger  { background: #fff; border: 1.5px solid var(--red); color: var(--red); }
+  .btn-danger:hover { background: #fdecea; }
+
+  /* ── 콘텐츠 ── */
+  .content { padding: 28px; }
+
+  /* ── 요약 KPI 카드 ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi-card {
+    background: var(--white); border-radius: 12px; padding: 20px 22px;
+    border-left: 4px solid var(--blue-mid);
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  }
+  .kpi-card.green  { border-left-color: var(--green); }
+  .kpi-card.orange { border-left-color: var(--orange); }
+  .kpi-card.red    { border-left-color: var(--red); }
+  .kpi-label { font-size: 12px; color: var(--text-sub); margin-bottom: 6px; }
+  .kpi-value { font-size: 32px; font-weight: 700; color: var(--text-main); line-height: 1; }
+  .kpi-sub   { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+
+  /* ── 섹션 카드 ── */
+  .section-title { font-size: 15px; font-weight: 700; color: var(--blue-dark); margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--blue-light); }
+  .card-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .card-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .card {
+    background: var(--white); border-radius: 12px; padding: 20px 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  }
+  .card-title { font-size: 12px; font-weight: 700; color: var(--text-sub); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .5px; }
+  .card-q     { font-size: 13px; color: var(--text-main); margin-bottom: 14px; font-weight: 600; line-height: 1.5; }
+  .chart-wrap { position: relative; height: 200px; }
+  .chart-wrap.tall { height: 260px; }
+  .chart-wrap.sm   { height: 160px; }
+
+  /* ── 척도 평균 표시 ── */
+  .score-display { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 10px; }
+  .score-big  { font-size: 42px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
+  .score-denom { font-size: 18px; color: var(--text-sub); margin-bottom: 4px; }
+  .score-bar-wrap { flex: 1; }
+  .score-bar-bg { background: var(--gray-line); border-radius: 4px; height: 8px; }
+  .score-bar-fill { height: 8px; border-radius: 4px; background: var(--blue-mid); transition: width .6s; }
+
+  /* ── NPS ── */
+  .nps-breakdown { display: flex; gap: 8px; margin-top: 12px; }
+  .nps-segment { flex: 1; text-align: center; border-radius: 8px; padding: 10px 6px; }
+  .nps-segment.promoter  { background: #d5f5e3; }
+  .nps-segment.passive   { background: #fef9e7; }
+  .nps-segment.detractor { background: #fdecea; }
+  .nps-segment .seg-pct  { font-size: 22px; font-weight: 700; }
+  .nps-segment .seg-lbl  { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+  .nps-segment.promoter  .seg-pct { color: var(--green); }
+  .nps-segment.passive   .seg-pct { color: var(--orange); }
+  .nps-segment.detractor .seg-pct { color: var(--red); }
+
+  /* ── 개선점 순위 ── */
+  .rank-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .rank-item { display: flex; align-items: center; gap: 10px; }
+  .rank-bar-bg { flex: 1; background: var(--gray-line); border-radius: 4px; height: 10px; }
+  .rank-bar-fill { height: 10px; border-radius: 4px; background: var(--blue-mid); }
+  .rank-label { font-size: 12px; width: 110px; flex-shrink: 0; color: var(--text-main); }
+  .rank-pct   { font-size: 12px; font-weight: 700; color: var(--blue-dark); width: 38px; text-align: right; }
+
+  /* ── 자유의견 ── */
+  .opinion-list { display: flex; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto; }
+  .opinion-item {
+    background: var(--gray-bg); border-left: 3px solid var(--blue-mid);
+    border-radius: 0 8px 8px 0; padding: 10px 14px;
+    font-size: 13px; color: var(--text-main); line-height: 1.6;
+  }
+  .opinion-time { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+
+  /* ── 빈 상태 ── */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text-sub); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; margin-bottom: 16px; }
+
+  /* ── 응답 테이블 ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--blue-dark); color: #fff; padding: 10px 12px; text-align: left; white-space: nowrap; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--gray-line); white-space: nowrap; }
+  tr:hover td { background: var(--blue-light); }
+
+  /* ── 반응형 ── */
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } .card-grid-3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 768px)  { .sidebar { display:none; } .main { margin-left:0; } .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ── 사이드바 ── -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <h2>S-TAMP<br>설문 분석 대시보드</h2>
+    <p>삼성자산운용 디지털혁신팀</p>
+  </div>
+  <nav>
+    <div class="nav-section">분석 메뉴</div>
+    <a href="#kpi" class="active">📊 종합 요약 (KPI)</a>
+    <a href="#sec2">✏️ 사용 편의성</a>
+    <a href="#sec3">🔗 Knox-ATIS 통합</a>
+    <a href="#sec4">⚡ 성능·안정성</a>
+    <a href="#sec5">🔒 보안·컴플라이언스</a>
+    <a href="#sec6">📈 업무 개선 효과</a>
+    <a href="#sec7">⭐ 종합 만족도</a>
+    <a href="#opinions">💬 자유 의견</a>
+    <a href="#responses">📋 전체 응답 목록</a>
+  </nav>
+  <div class="sidebar-footer">2026년 4월 | SI Test</div>
+</div>
+
+<!-- ── 메인 ── -->
+<div class="main">
+  <div class="topbar">
+    <h1>설문 결과 분석 대시보드</h1>
+    <div class="topbar-right">
+      <button class="btn btn-outline" onclick="loadDemo()">🎲 샘플 데이터 로드</button>
+      <button class="btn btn-outline" onclick="exportCSV()">⬇ CSV 내보내기</button>
+      <button class="btn btn-danger"  onclick="clearData()">🗑 데이터 초기화</button>
+    </div>
+  </div>
+
+  <div class="content" id="dashboard">
+    <div class="empty-state" id="empty-state">
+      <div class="icon">📋</div>
+      <p>아직 설문 응답이 없습니다.<br>설문조사를 먼저 실시하거나 샘플 데이터를 로드해 보세요.</p>
+      <button class="btn btn-primary" onclick="loadDemo()">🎲 샘플 데이터로 미리 보기</button>
+    </div>
+
+    <div id="analysis-content" style="display:none">
+
+      <!-- KPI -->
+      <div id="kpi">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">총 응답 수</div>
+            <div class="kpi-value" id="kpi-total">0</div>
+            <div class="kpi-sub">명 참여</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-label">전반적 만족도 평균</div>
+            <div class="kpi-value" id="kpi-satisfaction">-</div>
+            <div class="kpi-sub">/ 5점 만점 (Q17)</div>
+          </div>
+          <div class="kpi-card orange">
+            <div class="kpi-label">NPS 지수</div>
+            <div class="kpi-value" id="kpi-nps">-</div>
+            <div class="kpi-sub">추천 의향 지수 (Q18)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">업무 효율 개선 체감</div>
+            <div class="kpi-value" id="kpi-efficiency">-</div>
+            <div class="kpi-sub">/ 5점 만점 (Q15)</div>
+          </div>
+        </div>
+
+        <!-- 섹션별 평균 레이더 -->
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-title">섹션별 평균 점수 종합</div>
+          <div class="chart-wrap tall">
+            <canvas id="radarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 섹션 2: 사용 편의성 -->
+      <div id="sec2">
+        <div class="section-title">섹션 2 · 시스템 사용 편의성</div>
+        <div class="card-grid-3">
+          <div class="card">
+            <div class="card-q">Q2. 화면 구성(UI) 직관성</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q2">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap sm"><canvas id="chart-q2"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q3. 문서 템플릿 선택·입력 편의성</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q3">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap sm"><canvas id="chart-q3"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q4. 3단계 간소화 프로세스 간결성</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q4">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap sm"><canvas id="chart-q4"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 섹션 3: Knox-ATIS -->
+      <div id="sec3">
+        <div class="section-title">섹션 3 · Knox-ATIS 이중결재 통합 기능 평가</div>
+        <div class="card-grid-2">
+          <div class="card">
+            <div class="card-q">Q5. One-Stop 통합 만족도</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q5">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-q5"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q6. 업무 처리 시간 단축 체감</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q6">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-q6"></canvas></div>
+          </div>
+        </div>
+        <div class="card-grid-2">
+          <div class="card">
+            <div class="card-q">Q7. 가장 크게 개선된 점 (복수 선택)</div>
+            <div class="chart-wrap"><canvas id="chart-q7"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q8. 결재 워크플로 명확성</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q8">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-q8"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 섹션 4: 성능 -->
+      <div id="sec4">
+        <div class="section-title">섹션 4 · 시스템 성능 및 안정성</div>
+        <div class="card-grid-2">
+          <div class="card">
+            <div class="card-q">Q9. 전자서명 처리 속도 만족도</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q9">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-q9"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q10. 오류·장애 경험 횟수</div>
+            <div class="chart-wrap"><canvas id="chart-q10"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 섹션 5: 보안 -->
+      <div id="sec5">
+        <div class="section-title">섹션 5 · 보안 및 컴플라이언스</div>
+        <div class="card-grid-3">
+          <div class="card">
+            <div class="card-q">Q12. 블록체인 Audit Trail 효과</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q12">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap sm"><canvas id="chart-q12"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q13. 전자서명 법적 효력 신뢰도</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q13">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap sm"><canvas id="chart-q13"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q14. 문서 보관·조회 충분성</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q14">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap sm"><canvas id="chart-q14"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 섹션 6: 업무 개선 -->
+      <div id="sec6">
+        <div class="section-title">섹션 6 · 업무 개선 효과 평가</div>
+        <div class="card-grid-2">
+          <div class="card">
+            <div class="card-q">Q15. 전체 업무 효율 향상 체감</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q15">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-q15"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q16. 고객 문서 당일 처리 만족도</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q16">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-q16"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 섹션 7: 종합 -->
+      <div id="sec7">
+        <div class="section-title">섹션 7 · 종합 만족도 및 의견</div>
+        <div class="card-grid-2">
+          <div class="card">
+            <div class="card-q">Q17. 전반적 만족도</div>
+            <div class="score-display">
+              <span class="score-big" id="avg-q17">-</span>
+              <span class="score-denom">/5</span>
+            </div>
+            <div class="chart-wrap"><canvas id="chart-q17"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q18. 추천 의향 (NPS)</div>
+            <div id="nps-detail"></div>
+            <div class="chart-wrap"><canvas id="chart-q18"></canvas></div>
+          </div>
+        </div>
+        <div class="card-grid-2">
+          <div class="card">
+            <div class="card-q">Q19. 가장 만족스러운 기능 (복수 선택)</div>
+            <div class="chart-wrap"><canvas id="chart-q19"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-q">Q20. 가장 시급한 개선 항목 (복수 선택)</div>
+            <div class="chart-wrap"><canvas id="chart-q20"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 자유 의견 -->
+      <div id="opinions">
+        <div class="section-title">💬 자유 의견 (Q21)</div>
+        <div class="card">
+          <div class="opinion-list" id="opinion-list"></div>
+        </div>
+      </div>
+
+      <!-- 전체 응답 목록 -->
+      <div id="responses">
+        <div class="section-title">📋 전체 응답 목록</div>
+        <div class="card">
+          <div class="table-wrap">
+            <table id="response-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>응답시각</th>
+                  <th>Q1사용빈도</th><th>Q2UI</th><th>Q3템플릿</th><th>Q4간소화</th>
+                  <th>Q5통합만족</th><th>Q6시간단축</th><th>Q8워크플로</th>
+                  <th>Q9처리속도</th><th>Q10오류경험</th>
+                  <th>Q12감사추적</th><th>Q13법적신뢰</th><th>Q14문서보관</th>
+                  <th>Q15효율향상</th><th>Q16당일처리</th>
+                  <th>Q17만족도</th><th>Q18NPS</th>
+                </tr>
+              </thead>
+              <tbody id="response-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /analysis-content -->
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ══════════════════════════════════════════════════
+//  데이터 로드 & 저장
+// ══════════════════════════════════════════════════
+const STORAGE_KEY = 'stamp_survey_responses';
+
+function getResponses() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+function clearData() {
+  if (!confirm('모든 응답 데이터를 초기화하시겠습니까?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+// ── 샘플 데이터 (30명) ──────────────────────────
+function loadDemo() {
+  const freq = ['하루5회이상','하루1~4회','주2~4회','주1회이하'];
+  const err10 = ['없었다','없었다','없었다','없었다','1~2회','1~2회','3~5회'];
+
+  const q7opts  = ['중복입력해소','결재대기단축','이동불필요','휴먼에러감소','기타'];
+  const q19opts = ['이중결재통합','3단계간소화','블록체인감사','당일처리','중앙보관조회','기타'];
+  const q20opts = ['화면UI','처리속도','오류메시지','문서검색','교육도움말','기타'];
+
+  const opinions = [
+    '전체적으로 기존 시스템 대비 훨씬 편리해졌습니다. 특히 이중결재 해소가 큰 도움이 됩니다.',
+    'UI가 직관적이어서 별도 교육 없이도 바로 사용할 수 있었습니다.',
+    '문서 검색 기능이 좀 더 고도화되면 좋겠습니다.',
+    '처리 속도가 기대보다 빨라서 만족스럽습니다.',
+    '오류 발생 시 안내 메시지가 좀 더 구체적이면 좋겠습니다.',
+    '당일 처리가 가능해지면서 업무 흐름이 매끄러워졌습니다.',
+    '블록체인 이력 관리 기능이 컴플라이언스 관점에서 매우 유용합니다.',
+    '',''
+  ];
+
+  function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function pick(arr, n) {
+    const sh = [...arr].sort(() => Math.random() - .5);
+    return sh.slice(0, n || rnd(1, 2));
+  }
+
+  const demos = [];
+  const base = new Date('2026-04-08T09:00:00');
+  for (let i = 0; i < 30; i++) {
+    const ts = new Date(base.getTime() + i * 18 * 60000).toISOString();
+    // 긍정 편향 (실제 삼성E&A 4.8 벤치마크 참고)
+    const bias = () => Math.min(5, Math.max(1, Math.round(4 + (Math.random() - .3))));
+    demos.push({
+      timestamp: ts,
+      q1:  freq[rnd(0,3)],
+      q2:  String(bias()), q3: String(bias()), q4: String(bias()),
+      q5:  String(bias()), q6: String(bias()),
+      q7:  pick(q7opts, rnd(1,3)),
+      q8:  String(bias()),
+      q9:  String(bias()),
+      q10: err10[rnd(0,6)],
+      q11: ['보통','충분','매우충분'][rnd(0,2)],
+      q12: String(bias()), q13: String(bias()), q14: String(bias()),
+      q15: String(bias()), q16: String(bias()),
+      q17: String(bias()), q18: String(bias()),
+      q19: pick(q19opts, rnd(1,3)),
+      q20: pick(q20opts, rnd(1,2)),
+      q21: opinions[rnd(0, opinions.length-1)],
+    });
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(demos));
+  renderDashboard();
+}
+
+// ══════════════════════════════════════════════════
+//  차트 유틸
+// ══════════════════════════════════════════════════
+const CHART_INSTANCES = {};
+const BLUE_PALETTE = ['#00418A','#1A73E8','#4FA3F7','#7EC8F9','#B3E0FF'];
+const MULTI_PALETTE = ['#00418A','#1A73E8','#27AE60','#E67E22','#8E44AD','#C0392B'];
+
+function destroyChart(id) {
+  if (CHART_INSTANCES[id]) { CHART_INSTANCES[id].destroy(); delete CHART_INSTANCES[id]; }
+}
+
+function scaleChart(canvasId, responses, field) {
+  destroyChart(canvasId);
+  const counts = [0,0,0,0,0];
+  responses.forEach(r => { const v = parseInt(r[field]); if (v >= 1 && v <= 5) counts[v-1]++; });
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  CHART_INSTANCES[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['1점','2점','3점','4점','5점'],
+      datasets: [{ data: counts, backgroundColor: BLUE_PALETTE, borderRadius: 6, borderSkipped: false }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } }, grid: { color: '#eee' } },
+        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // 평균
+  const vals = responses.map(r => parseInt(r[field])).filter(v => v >= 1 && v <= 5);
+  const avg = vals.length ? (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(2) : '-';
+  const el = document.getElementById('avg-' + field);
+  if (el) el.textContent = avg;
+}
+
+function pieChart(canvasId, responses, field, labels) {
+  destroyChart(canvasId);
+  const counts = {};
+  responses.forEach(r => {
+    const v = r[field];
+    if (Array.isArray(v)) v.forEach(x => counts[x] = (counts[x]||0) + 1);
+    else if (v) counts[v] = (counts[v]||0) + 1;
+  });
+  const data = labels.map(l => counts[l] || 0);
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  CHART_INSTANCES[canvasId] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data, backgroundColor: MULTI_PALETTE, borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } } }
+    }
+  });
+}
+
+function hbarChart(canvasId, responses, field, labels) {
+  destroyChart(canvasId);
+  const total = responses.length || 1;
+  const counts = {};
+  responses.forEach(r => {
+    const v = r[field];
+    if (Array.isArray(v)) v.forEach(x => counts[x] = (counts[x]||0) + 1);
+    else if (v) counts[v] = (counts[v]||0) + 1;
+  });
+  const data = labels.map(l => counts[l] || 0);
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  CHART_INSTANCES[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data, backgroundColor: MULTI_PALETTE, borderRadius: 6, borderSkipped: false }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } }, grid: { color: '#eee' } },
+        y: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════
+//  레이더 차트 (섹션별 평균)
+// ══════════════════════════════════════════════════
+function radarChart(responses) {
+  destroyChart('radarChart');
+  function avg(fields) {
+    const vals = [];
+    responses.forEach(r => fields.forEach(f => { const v = parseFloat(r[f]); if (v >= 1 && v <= 5) vals.push(v); }));
+    return vals.length ? (vals.reduce((a,b) => a+b,0)/vals.length).toFixed(2) : 0;
+  }
+  const data = [
+    avg(['q2','q3','q4']),
+    avg(['q5','q6','q8']),
+    avg(['q9']),
+    avg(['q12','q13','q14']),
+    avg(['q15','q16']),
+    avg(['q17']),
+  ];
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  CHART_INSTANCES['radarChart'] = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['사용 편의성','Knox-ATIS 통합','성능·안정성','보안·컴플라이언스','업무 개선 효과','종합 만족도'],
+      datasets: [{
+        label: '평균 점수',
+        data,
+        backgroundColor: 'rgba(26,115,232,.15)',
+        borderColor: '#1A73E8',
+        pointBackgroundColor: '#00418A',
+        pointRadius: 5,
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 10 } }, pointLabels: { font: { size: 12 } } } },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════
+//  NPS 계산
+// ══════════════════════════════════════════════════
+function renderNPS(responses) {
+  const vals = responses.map(r => parseInt(r['q18'])).filter(v => !isNaN(v));
+  if (!vals.length) return;
+  const promoters  = vals.filter(v => v === 5).length;
+  const passives   = vals.filter(v => v === 4).length;
+  const detractors = vals.filter(v => v <= 3).length;
+  const total = vals.length;
+  const nps = Math.round((promoters - detractors) / total * 100);
+
+  document.getElementById('kpi-nps').textContent = (nps >= 0 ? '+' : '') + nps;
+
+  document.getElementById('nps-detail').innerHTML = `
+    <div class="nps-breakdown">
+      <div class="nps-segment promoter">
+        <div class="seg-pct">${Math.round(promoters/total*100)}%</div>
+        <div class="seg-lbl">추천자 (5점)</div>
+      </div>
+      <div class="nps-segment passive">
+        <div class="seg-pct">${Math.round(passives/total*100)}%</div>
+        <div class="seg-lbl">중립 (4점)</div>
+      </div>
+      <div class="nps-segment detractor">
+        <div class="seg-pct">${Math.round(detractors/total*100)}%</div>
+        <div class="seg-lbl">비추천 (1~3점)</div>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════
+//  자유 의견
+// ══════════════════════════════════════════════════
+function renderOpinions(responses) {
+  const list = document.getElementById('opinion-list');
+  const items = responses.filter(r => r.q21 && r.q21.trim());
+  if (!items.length) { list.innerHTML = '<p style="color:#aaa;font-size:13px;">자유 의견이 없습니다.</p>'; return; }
+  list.innerHTML = items.map(r => `
+    <div class="opinion-item">
+      ${r.q21}
+      <div class="opinion-time">${new Date(r.timestamp).toLocaleString('ko-KR')}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  전체 응답 테이블
+// ══════════════════════════════════════════════════
+function renderTable(responses) {
+  const tbody = document.getElementById('response-tbody');
+  tbody.innerHTML = responses.map((r, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${new Date(r.timestamp).toLocaleString('ko-KR')}</td>
+      <td>${r.q1||''}</td>
+      <td>${r.q2||''}</td><td>${r.q3||''}</td><td>${r.q4||''}</td>
+      <td>${r.q5||''}</td><td>${r.q6||''}</td><td>${r.q8||''}</td>
+      <td>${r.q9||''}</td><td>${r.q10||''}</td>
+      <td>${r.q12||''}</td><td>${r.q13||''}</td><td>${r.q14||''}</td>
+      <td>${r.q15||''}</td><td>${r.q16||''}</td>
+      <td>${r.q17||''}</td><td>${r.q18||''}</td>
+    </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  CSV 내보내기
+// ══════════════════════════════════════════════════
+function exportCSV() {
+  const responses = getResponses();
+  if (!responses.length) { alert('내보낼 응답 데이터가 없습니다.'); return; }
+  const headers = ['번호','응답시각','Q1사용빈도','Q2UI','Q3템플릿','Q4간소화',
+                   'Q5통합만족','Q6시간단축','Q7개선점','Q8워크플로',
+                   'Q9처리속도','Q10오류경험','Q11오류메시지',
+                   'Q12감사추적','Q13법적신뢰','Q14문서보관',
+                   'Q15효율향상','Q16당일처리','Q17만족도','Q18NPS',
+                   'Q19만족기능','Q20개선항목','Q21자유의견'];
+  const rows = responses.map((r, i) => [
+    i+1,
+    new Date(r.timestamp).toLocaleString('ko-KR'),
+    r.q1||'', r.q2||'', r.q3||'', r.q4||'',
+    r.q5||'', r.q6||'',
+    Array.isArray(r.q7) ? r.q7.join('|') : (r.q7||''),
+    r.q8||'', r.q9||'', r.q10||'', r.q11||'',
+    r.q12||'', r.q13||'', r.q14||'',
+    r.q15||'', r.q16||'', r.q17||'', r.q18||'',
+    Array.isArray(r.q19) ? r.q19.join('|') : (r.q19||''),
+    Array.isArray(r.q20) ? r.q20.join('|') : (r.q20||''),
+    (r.q21||'').replace(/,/g,'；'),
+  ]);
+
+  const bom = '\uFEFF';
+  const csv = bom + [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `S-TAMP_설문결과_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════════════
+//  전체 렌더링
+// ══════════════════════════════════════════════════
+function renderDashboard() {
+  const responses = getResponses();
+  if (!responses.length) {
+    document.getElementById('empty-state').style.display = 'block';
+    document.getElementById('analysis-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('analysis-content').style.display = 'block';
+
+  // KPI
+  document.getElementById('kpi-total').textContent = responses.length;
+  const avgQ17 = (responses.map(r=>parseFloat(r.q17)).filter(v=>!isNaN(v)).reduce((a,b)=>a+b,0)/responses.length).toFixed(2);
+  const avgQ15 = (responses.map(r=>parseFloat(r.q15)).filter(v=>!isNaN(v)).reduce((a,b)=>a+b,0)/responses.length).toFixed(2);
+  document.getElementById('kpi-satisfaction').textContent = avgQ17;
+  document.getElementById('kpi-efficiency').textContent   = avgQ15;
+
+  // 레이더
+  radarChart(responses);
+
+  // 척도형 차트
+  ['q2','q3','q4','q5','q6','q8','q9','q12','q13','q14','q15','q16','q17'].forEach(f => {
+    scaleChart('chart-' + f, responses, f);
+  });
+
+  // 선택형
+  pieChart('chart-q10', responses, 'q10', ['없었다','1~2회','3~5회','5회이상']);
+  hbarChart('chart-q7',  responses, 'q7',  ['중복입력해소','결재대기단축','이동불필요','휴먼에러감소','기타']);
+  hbarChart('chart-q18', responses, 'q18', ['1점','2점','3점','4점','5점']);
+  hbarChart('chart-q19', responses, 'q19', ['이중결재통합','3단계간소화','블록체인감사','당일처리','중앙보관조회','기타']);
+  hbarChart('chart-q20', responses, 'q20', ['화면UI','처리속도','오류메시지','문서검색','교육도움말','기타']);
+
+  // NPS
+  renderNPS(responses);
+  // 자유의견
+  renderOpinions(responses);
+  // 테이블
+  renderTable(responses);
+}
+
+// 사이드바 활성화
+window.addEventListener('scroll', () => {
+  const sections = ['kpi','sec2','sec3','sec4','sec5','sec6','sec7','opinions','responses'];
+  const links = document.querySelectorAll('.sidebar nav a');
+  let current = sections[0];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 100) current = id;
+  });
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// 초기 렌더링
+renderDashboard();
+</script>
+</body>
+</html>

@@ -15,171 +15,68 @@
     --text-sub:   #666;
     --white:      #fff;
     --red:        #C0392B;
-    --green:      #1E8449;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
-    background: var(--gray-bg);
-    color: var(--text-main);
-    font-size: 15px;
-    line-height: 1.7;
-  }
+  body { font-family: 'Malgun Gothic','맑은 고딕',sans-serif; background:var(--gray-bg); color:var(--text-main); font-size:15px; line-height:1.7; }
 
-  /* ── 헤더 ── */
-  header {
-    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
-    color: #fff;
-    padding: 44px 24px 32px;
-    text-align: center;
-  }
-  header .badge {
-    display: inline-block;
-    background: rgba(255,255,255,.2);
-    border-radius: 20px;
-    padding: 4px 16px;
-    font-size: 12px;
-    letter-spacing: 1px;
-    margin-bottom: 14px;
-  }
-  header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
-  header p  { font-size: 13px; opacity: .85; }
+  header { background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue-mid) 100%); color:#fff; padding:44px 24px 32px; text-align:center; }
+  header .badge { display:inline-block; background:rgba(255,255,255,.2); border-radius:20px; padding:4px 16px; font-size:12px; letter-spacing:1px; margin-bottom:14px; }
+  header h1 { font-size:24px; font-weight:700; margin-bottom:6px; }
+  header p  { font-size:13px; opacity:.85; }
 
-  /* ── 안내 ── */
-  .notice {
-    max-width: 760px;
-    margin: 24px auto 0;
-    padding: 0 16px;
-  }
-  .notice-inner {
-    background: var(--blue-light);
-    border-left: 4px solid var(--blue-mid);
-    border-radius: 8px;
-    padding: 16px 20px;
-    font-size: 13.5px;
-  }
+  .notice { max-width:760px; margin:24px auto 0; padding:0 16px; }
+  .notice-inner { background:var(--blue-light); border-left:4px solid var(--blue-mid); border-radius:8px; padding:16px 20px; font-size:13.5px; }
 
-  /* ── 진행 바 ── */
-  .progress-wrap {
-    max-width: 760px;
-    margin: 18px auto 0;
-    padding: 0 16px;
-  }
-  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-bottom: 5px; }
-  .progress-bar  { height: 6px; background: var(--gray-line); border-radius: 3px; }
-  .progress-fill { height: 100%; width: 0%; background: var(--blue-mid); border-radius: 3px; transition: width .4s; }
+  .progress-wrap { max-width:760px; margin:18px auto 0; padding:0 16px; }
+  .progress-info { display:flex; justify-content:space-between; font-size:12px; color:var(--text-sub); margin-bottom:5px; }
+  .progress-bar  { height:6px; background:var(--gray-line); border-radius:3px; }
+  .progress-fill { height:100%; width:0%; background:var(--blue-mid); border-radius:3px; transition:width .4s; }
 
-  /* ── 폼 래퍼 ── */
-  .form-wrap { max-width: 760px; margin: 22px auto 60px; padding: 0 16px; }
+  .form-wrap { max-width:760px; margin:22px auto 60px; padding:0 16px; }
 
-  /* ── 섹션 ── */
-  .sec-header {
-    background: var(--blue-dark);
-    color: #fff;
-    padding: 11px 20px;
-    border-radius: 8px 8px 0 0;
-    font-size: 15px;
-    font-weight: 700;
-    margin-top: 30px;
-  }
-  .sec-body {
-    background: var(--white);
-    border: 1px solid var(--gray-line);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    padding: 22px 22px 10px;
-  }
+  .sec-header { background:var(--blue-dark); color:#fff; padding:11px 20px; border-radius:8px 8px 0 0; font-size:15px; font-weight:700; margin-top:30px; }
+  .sec-body   { background:var(--white); border:1px solid var(--gray-line); border-top:none; border-radius:0 0 8px 8px; padding:22px 22px 10px; }
 
-  /* ── 질문 블록 ── */
-  .q-block { margin-bottom: 26px; }
-  .q-label {
-    font-weight: 600;
-    font-size: 14.5px;
-    margin-bottom: 12px;
-    color: var(--text-main);
-  }
-  .q-num   { color: var(--blue-dark); font-weight: 700; margin-right: 4px; }
-  .req     { color: var(--red); margin-left: 2px; }
-  .q-note  { font-size: 12px; color: var(--text-sub); font-weight: 400; margin-left: 4px; }
+  .q-block { margin-bottom:26px; }
+  .q-label { font-weight:600; font-size:14.5px; margin-bottom:12px; color:var(--text-main); }
+  .q-num   { color:var(--blue-dark); font-weight:700; margin-right:4px; }
+  .req     { color:var(--red); margin-left:2px; }
+  .q-note  { font-size:12px; color:var(--text-sub); font-weight:400; margin-left:4px; }
 
-  /* ── 5점 척도 ── */
-  .scale-wrap {
-    display: grid;
-    grid-template-columns: auto repeat(5, 1fr) auto;
-    gap: 6px;
-    align-items: center;
-    background: var(--gray-bg);
-    border-radius: 8px;
-    padding: 14px 10px;
-  }
-  .scale-edge {
-    font-size: 11.5px;
-    color: var(--blue-dark);
-    font-weight: 600;
-    text-align: center;
-    max-width: 72px;
-    line-height: 1.3;
-  }
-  .scale-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .scale-col span { font-size: 13px; font-weight: 700; color: var(--blue-mid); }
-  .scale-col input[type="radio"] { width: 22px; height: 22px; accent-color: var(--blue-mid); cursor: pointer; }
+  .scale-wrap { display:grid; grid-template-columns:auto repeat(5,1fr) auto; gap:6px; align-items:center; background:var(--gray-bg); border-radius:8px; padding:14px 10px; }
+  .scale-edge { font-size:11.5px; color:var(--blue-dark); font-weight:600; text-align:center; max-width:72px; line-height:1.3; }
+  .scale-col  { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .scale-col span { font-size:13px; font-weight:700; color:var(--blue-mid); }
+  .scale-col input[type="radio"] { width:22px; height:22px; accent-color:var(--blue-mid); cursor:pointer; }
 
-  /* ── 선택형 ── */
-  .choice-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-  .choice-list li label {
-    display: flex; align-items: center; gap: 10px; cursor: pointer;
-    padding: 10px 14px;
-    border: 1.5px solid var(--gray-line);
-    border-radius: 8px;
-    transition: border-color .2s, background .2s;
-    font-size: 14.5px;
-  }
-  .choice-list li label:hover { border-color: var(--blue-mid); background: var(--blue-light); }
-  .choice-list li input { width: 18px; height: 18px; accent-color: var(--blue-mid); flex-shrink: 0; }
-  .choice-list li input:checked + span { color: var(--blue-dark); font-weight: 600; }
+  .choice-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+  .choice-list li label { display:flex; align-items:center; gap:10px; cursor:pointer; padding:10px 14px; border:1.5px solid var(--gray-line); border-radius:8px; transition:border-color .2s,background .2s; font-size:14.5px; }
+  .choice-list li label:hover { border-color:var(--blue-mid); background:var(--blue-light); }
+  .choice-list li input { width:18px; height:18px; accent-color:var(--blue-mid); flex-shrink:0; }
+  .choice-list li input:checked + span { color:var(--blue-dark); font-weight:600; }
 
-  /* ── 주관식 ── */
-  textarea {
-    width: 100%; border: 1.5px solid var(--gray-line); border-radius: 8px;
-    padding: 12px 14px; font-family: inherit; font-size: 14px;
-    resize: vertical; min-height: 110px; background: var(--gray-bg);
-    transition: border-color .2s;
-  }
-  textarea:focus { outline: none; border-color: var(--blue-mid); background: #fff; }
+  textarea { width:100%; border:1.5px solid var(--gray-line); border-radius:8px; padding:12px 14px; font-family:inherit; font-size:14px; resize:vertical; min-height:110px; background:var(--gray-bg); transition:border-color .2s; }
+  textarea:focus { outline:none; border-color:var(--blue-mid); background:#fff; }
 
-  /* ── 조건부 ── */
-  .conditional { display: none; }
+  .conditional { display:none; }
+  .err-msg { display:none; font-size:12px; color:var(--red); margin-top:6px; }
 
-  /* ── 에러 ── */
-  .err-msg { display: none; font-size: 12px; color: var(--red); margin-top: 6px; }
+  .submit-wrap { text-align:center; margin-top:34px; }
+  .btn-submit { background:var(--blue-dark); color:#fff; border:none; padding:16px 64px; font-size:16px; font-weight:700; border-radius:30px; cursor:pointer; letter-spacing:.5px; transition:background .2s,transform .1s; }
+  .btn-submit:hover  { background:var(--blue-mid); }
+  .btn-submit:active { transform:scale(.97); }
 
-  /* ── 제출 버튼 ── */
-  .submit-wrap { text-align: center; margin-top: 34px; }
-  .btn-submit {
-    background: var(--blue-dark); color: #fff; border: none;
-    padding: 16px 64px; font-size: 16px; font-weight: 700;
-    border-radius: 30px; cursor: pointer; letter-spacing: .5px;
-    transition: background .2s, transform .1s;
-  }
-  .btn-submit:hover  { background: var(--blue-mid); }
-  .btn-submit:active { transform: scale(.97); }
+  #thank-you { display:none; max-width:760px; margin:60px auto; text-align:center; background:var(--white); border-radius:16px; padding:60px 40px; box-shadow:0 4px 20px rgba(0,0,0,.08); }
+  #thank-you .icon { font-size:64px; }
+  #thank-you h2 { font-size:22px; margin:16px 0 8px; color:var(--blue-dark); }
+  #thank-you p  { color:var(--text-sub); font-size:14px; }
+  #thank-you a  { display:inline-block; margin-top:24px; padding:12px 32px; background:var(--blue-dark); color:#fff; border-radius:24px; text-decoration:none; font-weight:700; font-size:14px; }
+  #thank-you a:hover { background:var(--blue-mid); }
 
-  /* ── 감사 화면 ── */
-  #thank-you {
-    display: none; max-width: 760px; margin: 60px auto;
-    text-align: center; background: var(--white);
-    border-radius: 16px; padding: 60px 40px;
-    box-shadow: 0 4px 20px rgba(0,0,0,.08);
-  }
-  #thank-you .icon { font-size: 64px; }
-  #thank-you h2 { font-size: 22px; margin: 16px 0 8px; color: var(--blue-dark); }
-  #thank-you p  { color: var(--text-sub); font-size: 14px; }
-
-  /* ── 반응형 ── */
-  @media (max-width: 580px) {
-    .scale-wrap { grid-template-columns: repeat(5, 1fr); }
-    .scale-edge { display: none; }
-    header h1  { font-size: 19px; }
+  @media (max-width:580px) {
+    .scale-wrap { grid-template-columns:repeat(5,1fr); }
+    .scale-edge { display:none; }
+    header h1  { font-size:19px; }
   }
 </style>
 </head>
@@ -196,7 +93,7 @@
     안녕하세요. <strong>삼성자산운용 S-TAMP 전자서명 시스템</strong> 통합 테스트에 참여해 주셔서 감사합니다.<br>
     본 설문은 시스템 사용 경험을 수집하여 서비스 품질 개선 및 성과 평가에 활용됩니다.<br>
     응답 내용은 통계 목적으로만 사용되며, 소요 시간은 약 <strong>5분</strong>입니다.
-    &nbsp; <span style="color:var(--red);">*</span> 표시 항목은 필수 응답입니다.
+    &nbsp;<span style="color:var(--red);">*</span> 표시 항목은 필수 응답입니다.
   </div>
 </div>
 
@@ -210,7 +107,6 @@
   <!-- ══ 섹션 1 ══ -->
   <div class="sec-header">섹션 1 &nbsp;|&nbsp; 기본 정보</div>
   <div class="sec-body">
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q1.</span> S-TAMP 시스템 사용 빈도는 어느 정도입니까? <span class="req">*</span></div>
       <ul class="choice-list">
@@ -226,7 +122,6 @@
   <!-- ══ 섹션 2 ══ -->
   <div class="sec-header">섹션 2 &nbsp;|&nbsp; 시스템 사용 편의성</div>
   <div class="sec-body">
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q2.</span> S-TAMP 화면 구성(UI)이 직관적이고 이해하기 쉬웠습니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -240,7 +135,6 @@
       </div>
       <div class="err-msg" id="err-q2">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q3.</span> 문서 템플릿 선택 및 내용 입력 과정이 편리하였습니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -254,7 +148,6 @@
       </div>
       <div class="err-msg" id="err-q3">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q4.</span> 기존 11단계 대비 3단계로 간소화된 새 프로세스(템플릿 선택 → 전자서명 → 자동발송)가 간결하게 느껴집니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -273,7 +166,6 @@
   <!-- ══ 섹션 3 ══ -->
   <div class="sec-header">섹션 3 &nbsp;|&nbsp; Knox-ATIS 이중결재 통합 기능 평가</div>
   <div class="sec-body">
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q5.</span> Knox와 ATIS의 이중결재가 S-TAMP로 통합되어 One-Stop 처리가 가능해진 것에 만족하십니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -287,7 +179,6 @@
       </div>
       <div class="err-msg" id="err-q5">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q6.</span> 기존 이중결재(Knox → ATIS) 대비 업무 처리 시간이 단축되었다고 느끼십니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -301,7 +192,6 @@
       </div>
       <div class="err-msg" id="err-q6">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q7.</span> S-TAMP 통합 후 가장 크게 개선된 점은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
       <ul class="choice-list">
@@ -312,7 +202,6 @@
         <li><label><input type="checkbox" name="q7" value="기타"><span>기타</span></label></li>
       </ul>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q8.</span> 결재 워크플로(상신 → 승인 → 완료) 흐름이 명확하고 이해하기 쉽습니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -331,7 +220,6 @@
   <!-- ══ 섹션 4 ══ -->
   <div class="sec-header">섹션 4 &nbsp;|&nbsp; 시스템 성능 및 안정성</div>
   <div class="sec-body">
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q9.</span> 전자서명 처리 속도(서명 요청 ~ 완료 소요 시간)에 만족하십니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -345,7 +233,6 @@
       </div>
       <div class="err-msg" id="err-q9">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q10.</span> 테스트 기간 중 시스템 오류 또는 장애를 경험하셨습니까? <span class="req">*</span></div>
       <ul class="choice-list">
@@ -356,8 +243,6 @@
       </ul>
       <div class="err-msg" id="err-q10">응답을 선택해 주세요.</div>
     </div>
-
-    <!-- 조건부: 오류 경험 시에만 표시 -->
     <div class="q-block conditional" id="q11-block">
       <div class="q-label"><span class="q-num">Q11.</span> 오류 안내 메시지가 원인과 해결 방법을 충분히 안내하였습니까?</div>
       <ul class="choice-list">
@@ -373,7 +258,6 @@
   <!-- ══ 섹션 5 ══ -->
   <div class="sec-header">섹션 5 &nbsp;|&nbsp; 보안 및 컴플라이언스</div>
   <div class="sec-body">
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q12.</span> 블록체인 기반 서명 이력 관리(Audit Trail)가 인감 오남용 방지에 효과적이라고 생각하십니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -387,7 +271,6 @@
       </div>
       <div class="err-msg" id="err-q12">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q13.</span> S-TAMP의 전자서명이 법적 효력을 갖추고 있다는 것에 신뢰가 가십니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -401,7 +284,6 @@
       </div>
       <div class="err-msg" id="err-q13">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q14.</span> 서명 완료 문서의 보관·조회 기능(중앙 저장소)이 충분합니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -420,7 +302,6 @@
   <!-- ══ 섹션 6 ══ -->
   <div class="sec-header">섹션 6 &nbsp;|&nbsp; 업무 개선 효과 평가</div>
   <div class="sec-body">
-
     <div class="q-block">
       <div class="q-label"><span class="q-num">Q15.</span> 기존 종이 인감 프로세스 대비 S-TAMP 도입으로 전체 업무 효율이 향상되었다고 느끼십니까? <span class="req">*</span></div>
       <div class="scale-wrap">
@@ -434,23 +315,26 @@
       </div>
       <div class="err-msg" id="err-q15">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
-      <div class="q-label"><span class="q-num">Q16.</span> 출력 → 날인 → 스캔 → 우편 발송 단계가 사라진 것이 실무에서 체감상 도움이 됩니까? <span class="req">*</span></div>
+      <div class="q-label"><span class="q-num">Q16.</span> 고객 문서 처리 속도(기존 3일 이상 → 당일 처리)에 만족하십니까? <span class="req">*</span></div>
       <div class="scale-wrap">
-        <div class="scale-edge">전혀<br>도움 안 됨</div>
+        <div class="scale-edge">매우<br>불만족</div>
         <div class="scale-col"><span>1</span><input type="radio" name="q16" value="1"></div>
         <div class="scale-col"><span>2</span><input type="radio" name="q16" value="2"></div>
         <div class="scale-col"><span>3</span><input type="radio" name="q16" value="3"></div>
         <div class="scale-col"><span>4</span><input type="radio" name="q16" value="4"></div>
         <div class="scale-col"><span>5</span><input type="radio" name="q16" value="5"></div>
-        <div class="scale-edge">매우<br>도움됨</div>
+        <div class="scale-edge">매우<br>만족</div>
       </div>
       <div class="err-msg" id="err-q16">응답을 선택해 주세요.</div>
     </div>
+  </div>
 
+  <!-- ══ 섹션 7 ══ -->
+  <div class="sec-header">섹션 7 &nbsp;|&nbsp; 종합 만족도 및 의견</div>
+  <div class="sec-body">
     <div class="q-block">
-      <div class="q-label"><span class="q-num">Q17.</span> 고객 문서 처리 속도(기존 3일 이상 → 당일 처리)에 만족하십니까? <span class="req">*</span></div>
+      <div class="q-label"><span class="q-num">Q17.</span> S-TAMP 전자서명 시스템에 대한 <strong>전반적인 만족도</strong>를 평가해 주십시오. <span class="req">*</span></div>
       <div class="scale-wrap">
         <div class="scale-edge">매우<br>불만족</div>
         <div class="scale-col"><span>1</span><input type="radio" name="q17" value="1"></div>
@@ -462,67 +346,44 @@
       </div>
       <div class="err-msg" id="err-q17">응답을 선택해 주세요.</div>
     </div>
-  </div>
-
-  <!-- ══ 섹션 7 ══ -->
-  <div class="sec-header">섹션 7 &nbsp;|&nbsp; 종합 만족도 및 의견</div>
-  <div class="sec-body">
-
     <div class="q-block">
-      <div class="q-label"><span class="q-num">Q18.</span> S-TAMP 전자서명 시스템에 대한 <strong>전반적인 만족도</strong>를 평가해 주십시오. <span class="req">*</span></div>
+      <div class="q-label"><span class="q-num">Q18.</span> 동료/타 부서에 S-TAMP 사용을 권장하시겠습니까? (NPS) <span class="req">*</span></div>
       <div class="scale-wrap">
-        <div class="scale-edge">매우<br>불만족</div>
+        <div class="scale-edge">절대<br>권장 안 함</div>
         <div class="scale-col"><span>1</span><input type="radio" name="q18" value="1"></div>
         <div class="scale-col"><span>2</span><input type="radio" name="q18" value="2"></div>
         <div class="scale-col"><span>3</span><input type="radio" name="q18" value="3"></div>
         <div class="scale-col"><span>4</span><input type="radio" name="q18" value="4"></div>
         <div class="scale-col"><span>5</span><input type="radio" name="q18" value="5"></div>
-        <div class="scale-edge">매우<br>만족</div>
+        <div class="scale-edge">적극<br>권장함</div>
       </div>
       <div class="err-msg" id="err-q18">응답을 선택해 주세요.</div>
     </div>
-
     <div class="q-block">
-      <div class="q-label"><span class="q-num">Q19.</span> 동료/타 부서에 S-TAMP 사용을 권장하시겠습니까? (NPS) <span class="req">*</span></div>
-      <div class="scale-wrap">
-        <div class="scale-edge">절대<br>권장 안 함</div>
-        <div class="scale-col"><span>1</span><input type="radio" name="q19" value="1"></div>
-        <div class="scale-col"><span>2</span><input type="radio" name="q19" value="2"></div>
-        <div class="scale-col"><span>3</span><input type="radio" name="q19" value="3"></div>
-        <div class="scale-col"><span>4</span><input type="radio" name="q19" value="4"></div>
-        <div class="scale-col"><span>5</span><input type="radio" name="q19" value="5"></div>
-        <div class="scale-edge">적극<br>권장함</div>
-      </div>
-      <div class="err-msg" id="err-q19">응답을 선택해 주세요.</div>
-    </div>
-
-    <div class="q-block">
-      <div class="q-label"><span class="q-num">Q20.</span> 가장 만족스러운 기능은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
+      <div class="q-label"><span class="q-num">Q19.</span> 가장 만족스러운 기능은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
       <ul class="choice-list">
-        <li><label><input type="checkbox" name="q20" value="이중결재통합"><span>Knox-ATIS 이중결재 통합</span></label></li>
-        <li><label><input type="checkbox" name="q20" value="3단계간소화"><span>3단계 간소화 프로세스</span></label></li>
-        <li><label><input type="checkbox" name="q20" value="블록체인감사"><span>블록체인 Audit Trail</span></label></li>
-        <li><label><input type="checkbox" name="q20" value="당일처리"><span>당일 즉시 처리</span></label></li>
-        <li><label><input type="checkbox" name="q20" value="중앙보관조회"><span>중앙 문서 보관·조회</span></label></li>
+        <li><label><input type="checkbox" name="q19" value="이중결재통합"><span>Knox-ATIS 이중결재 통합</span></label></li>
+        <li><label><input type="checkbox" name="q19" value="3단계간소화"><span>3단계 간소화 프로세스</span></label></li>
+        <li><label><input type="checkbox" name="q19" value="블록체인감사"><span>블록체인 Audit Trail</span></label></li>
+        <li><label><input type="checkbox" name="q19" value="당일처리"><span>당일 즉시 처리</span></label></li>
+        <li><label><input type="checkbox" name="q19" value="중앙보관조회"><span>중앙 문서 보관·조회</span></label></li>
+        <li><label><input type="checkbox" name="q19" value="기타"><span>기타</span></label></li>
+      </ul>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span class="q-num">Q20.</span> 가장 시급하게 개선이 필요한 부분은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
+      <ul class="choice-list">
+        <li><label><input type="checkbox" name="q20" value="화면UI"><span>화면 UI 구성</span></label></li>
+        <li><label><input type="checkbox" name="q20" value="처리속도"><span>처리 속도</span></label></li>
+        <li><label><input type="checkbox" name="q20" value="오류메시지"><span>오류 안내 메시지</span></label></li>
+        <li><label><input type="checkbox" name="q20" value="문서검색"><span>문서 검색·조회</span></label></li>
+        <li><label><input type="checkbox" name="q20" value="교육도움말"><span>교육/도움말</span></label></li>
         <li><label><input type="checkbox" name="q20" value="기타"><span>기타</span></label></li>
       </ul>
     </div>
-
     <div class="q-block">
-      <div class="q-label"><span class="q-num">Q21.</span> 가장 시급하게 개선이 필요한 부분은 무엇입니까? <span class="q-note">(복수 선택 가능)</span></div>
-      <ul class="choice-list">
-        <li><label><input type="checkbox" name="q21" value="화면UI"><span>화면 UI 구성</span></label></li>
-        <li><label><input type="checkbox" name="q21" value="처리속도"><span>처리 속도</span></label></li>
-        <li><label><input type="checkbox" name="q21" value="오류메시지"><span>오류 안내 메시지</span></label></li>
-        <li><label><input type="checkbox" name="q21" value="문서검색"><span>문서 검색·조회</span></label></li>
-        <li><label><input type="checkbox" name="q21" value="교육도움말"><span>교육/도움말</span></label></li>
-        <li><label><input type="checkbox" name="q21" value="기타"><span>기타</span></label></li>
-      </ul>
-    </div>
-
-    <div class="q-block">
-      <div class="q-label"><span class="q-num">Q22.</span> S-TAMP 시스템 개선을 위한 자유로운 의견을 남겨 주세요.</div>
-      <textarea name="q22" placeholder="의견을 자유롭게 입력해 주세요..."></textarea>
+      <div class="q-label"><span class="q-num">Q21.</span> S-TAMP 시스템 개선을 위한 자유로운 의견을 남겨 주세요.</div>
+      <textarea name="q21" placeholder="의견을 자유롭게 입력해 주세요..."></textarea>
     </div>
   </div>
 
@@ -531,71 +392,59 @@
   </div>
 </form>
 
-<!-- 감사 화면 -->
 <div id="thank-you">
   <div class="icon">✅</div>
   <h2>설문에 응해 주셔서 감사합니다!</h2>
   <p>귀하의 소중한 의견은 S-TAMP 시스템 품질 개선 및<br>전사 확대 적용에 적극 반영하겠습니다.</p>
   <p style="margin-top:16px;font-size:13px;color:#aaa;">삼성자산운용 디지털혁신팀</p>
+  <a href="S-TAMP_분석대시보드.html" target="_blank">📊 결과 분석 대시보드 보기</a>
 </div>
 
 <script>
-// ── 조건부: 오류 경험 시 Q11 표시 ──
+// 조건부 Q11 (오류 경험 시)
 document.querySelectorAll('input[name="q10"]').forEach(el => {
   el.addEventListener('change', () => {
-    document.getElementById('q11-block').style.display =
-      el.value !== '없었다' ? 'block' : 'none';
+    document.getElementById('q11-block').style.display = el.value !== '없었다' ? 'block' : 'none';
   });
 });
 
-// ── 진행률 ──
-const REQUIRED = ['q1','q2','q3','q4','q5','q6','q8','q9','q10',
-                  'q12','q13','q14','q15','q16','q17','q18','q19'];
+// 진행률
+const REQUIRED = ['q1','q2','q3','q4','q5','q6','q8','q9','q10','q12','q13','q14','q15','q16','q17','q18'];
 function calcProgress() {
-  const done = REQUIRED.filter(name =>
-    [...document.querySelectorAll(`input[name="${name}"]`)].some(i => i.checked)
-  ).length;
+  const done = REQUIRED.filter(n => [...document.querySelectorAll(`input[name="${n}"]`)].some(i => i.checked)).length;
   const pct = Math.round(done / REQUIRED.length * 100);
   document.getElementById('prog-fill').style.width = pct + '%';
   document.getElementById('prog-pct').textContent = pct + '%';
 }
 document.getElementById('survey-form').addEventListener('change', calcProgress);
 
-// ── 유효성 검사 & 제출 ──
+// 제출
 document.getElementById('survey-form').addEventListener('submit', e => {
   e.preventDefault();
-  let valid = true;
-  let firstErr = null;
-
+  let valid = true, firstErr = null;
   REQUIRED.forEach(name => {
     const answered = [...document.querySelectorAll(`input[name="${name}"]`)].some(i => i.checked);
     const errEl = document.getElementById('err-' + name);
     if (errEl) errEl.style.display = answered ? 'none' : 'block';
-    if (!answered) {
-      valid = false;
-      if (!firstErr) firstErr = errEl;
-    }
+    if (!answered && !firstErr) { valid = false; firstErr = errEl; }
   });
-
-  if (!valid) {
-    firstErr?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
+  if (!valid) { firstErr?.scrollIntoView({ behavior:'smooth', block:'center' }); return; }
 
   // 응답 수집
   const data = { timestamp: new Date().toISOString() };
   document.querySelectorAll('input:checked').forEach(el => {
     if (!el.name) return;
-    if (el.type === 'checkbox') {
-      (data[el.name] = data[el.name] || []).push(el.value);
-    } else {
-      data[el.name] = el.value;
-    }
+    if (el.type === 'checkbox') (data[el.name] = data[el.name] || []).push(el.value);
+    else data[el.name] = el.value;
   });
-  const ta = document.querySelector('textarea[name="q22"]');
-  if (ta) data['q22'] = ta.value;
+  const ta = document.querySelector('textarea[name="q21"]');
+  if (ta) data['q21'] = ta.value;
 
-  console.log('S-TAMP 설문 응답:', JSON.stringify(data, null, 2));
+  // localStorage 저장
+  const key = 'stamp_survey_responses';
+  const all = JSON.parse(localStorage.getItem(key) || '[]');
+  all.push(data);
+  localStorage.setItem(key, JSON.stringify(all));
 
   // 화면 전환
   document.getElementById('survey-form').style.display = 'none';
@@ -603,7 +452,7 @@ document.getElementById('survey-form').addEventListener('submit', e => {
   document.querySelector('.notice').style.display = 'none';
   document.querySelector('.progress-wrap').style.display = 'none';
   document.getElementById('thank-you').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
 });
 </script>
 </body>
